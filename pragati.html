@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Pragati Tai Bawankar (Shiv Sena) — Voter Search</title>
+
+  <!-- PapaParse for CSV parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#071126;
+      --card:#071827;
+      --accent1:#ff6b6b;
+      --accent2:#ffd166;
+      --accent3:#6be4ff;
+      --muted: rgba(255,255,255,0.7);
+      --glass: rgba(255,255,255,0.03);
+      --white:#ffffff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+      background: linear-gradient(180deg,#071126 0%, #021018 100%);
+      color:var(--white);
+      padding:28px;
+      min-height:100vh;
+    }
+
+    .container{max-width:1200px;margin:0 auto}
+    .hero{display:flex;gap:16px;align-items:center;margin-bottom:18px}
+    .logo{
+      width:88px;height:88px;border-radius:16px;
+      background:linear-gradient(135deg,var(--accent1),var(--accent3));
+      display:flex;align-items:center;justify-content:center;font-weight:900;color:#021226;font-size:28px;box-shadow:0 8px 28px rgba(0,0,0,0.6)
+    }
+    .title h1{margin:0;font-size:22px}
+    .title p{margin:6px 0 0 0;color:var(--muted);font-size:13px}
+
+    .controls{display:flex;gap:12px;margin:18px 0 12px;align-items:center;flex-wrap:wrap}
+    .search{
+      flex:1;min-width:240px;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--glass);
+      border:1px solid rgba(255,255,255,0.04)
+    }
+    .search input{flex:1;background:transparent;border:0;outline:0;color:var(--white);font-size:16px;padding:6px}
+    .btn{background:linear-gradient(90deg,var(--accent2),var(--accent3));color:#041226;padding:9px 12px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .small{padding:8px 10px;font-size:14px}
+
+    .cardWrap{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,0.04)}
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    thead th{position:sticky;top:0;background:rgba(2,6,23,0.6);padding:12px 10px;text-align:left;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.04)}
+    tbody tr{transition: background .12s ease;border-bottom:1px solid rgba(255,255,255,0.03)}
+    tbody tr:hover{background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
+    td{padding:12px 10px;vertical-align:middle}
+
+    .highlight{background:linear-gradient(90deg, rgba(255,107,107,0.14), rgba(107,228,255,0.06));padding:3px 6px;border-radius:6px}
+
+    /* Cards for mobile */
+    .cards{display:none}
+    @media (max-width:900px){
+      table{display:none}
+      .cards{display:grid;grid-template-columns:1fr;gap:12px}
+      .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+      .card .row{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px}
+      .controls{flex-direction:column;align-items:stretch}
+    }
+
+    .pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin-top:12px}
+    .pageBtn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer}
+    .pageBtn.active{background:linear-gradient(90deg,var(--accent1),var(--accent3));color:#041226;border:0}
+
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+    .muted{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <div class="logo">PB</div>
+      <div class="title">
+        <h1>Pragati Tai Bawankar <span style="font-size:13px;color:var(--muted)">(Shiv Sena)</span></h1>
+        <p>Instant voter lookup — type name, address, ID or ward to search across all fields</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.35-4.35" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="11" cy="11" r="6" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></circle></svg>
+        <input id="q" placeholder="Search name, address, EPIC no., ward..." autocomplete="off" />
+        <button id="clearBtn" class="btn ghost small">Clear</button>
+      </div>
+
+      <button id="downloadBtn" class="btn small">Download filtered CSV</button>
+      <!-- Upload removed on purpose: site loads directly from GitHub RAW CSV -->
+    </div>
+
+    <div class="cardWrap">
+      <div id="loading" class="muted">Loading data from GitHub...</div>
+
+      <div id="resultsArea">
+        <table id="dataTable" aria-live="polite">
+          <thead id="thead"></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+
+        <div class="cards" id="cards"></div>
+
+        <div class="pager" id="pager"></div>
+      </div>
+    </div>
+
+    <footer>Site loads CSV from GitHub raw file. If you change CSV on GitHub, this page reflects updates automatically.</footer>
+  </div>
+
+<script>
+/* ---------- CONFIG ---------- */
+// Converted RAW URL (from your GitHub link)
+const CSV_URL = "https://raw.githubusercontent.com/PRAGATIBAWANKAR1/Pragati-Tai-Bawankar/main/VOTERLISTALL8.csv";
+// How many rows per page:
+const PAGE_SIZE = 30;
+/* ---------------------------- */
+
+let data = [];
+let filtered = [];
+let headers = [];
+let currentPage = 1;
+
+// debounce utility
+function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); } }
+
+function showLoading(msg){ document.getElementById('loading').textContent = msg || 'Loading...'; }
+function hideLoading(){ document.getElementById('loading').textContent = ''; }
+
+function fetchCSV(url){
+  showLoading('Fetching CSV from GitHub...');
+  Papa.parse(url, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results){
+      data = results.data.filter(r => Object.values(r).some(v => v !== null && v !== undefined && v.toString().trim() !== ''));
+      headers = results.meta.fields || Object.keys(data[0]||{});
+      initAfterLoad();
+    },
+    error: function(err){
+      showLoading('Error loading CSV from GitHub. Check CSV URL and repository visibility.');
+      console.error(err);
+    }
+  });
+}
+
+function initAfterLoad(){
+  hideLoading();
+  // normalize to strings
+  data = data.map(row => {
+    const out = {};
+    headers.forEach(h => out[h] = (row[h]||'').toString().trim());
+    return out;
+  });
+  filtered = data.slice();
+  renderTableHead();
+  renderPage(1);
+  // small toast
+  console.info('Data loaded: ' + data.length + ' records');
+}
+
+function getCols(){ return headers.slice(0,8); } // show first 8 columns
+
+function renderTableHead(){
+  const thead = document.getElementById('thead'); thead.innerHTML = '';
+  const cols = getCols();
+  const tr = document.createElement('tr');
+  cols.forEach(c => {
+    const th = document.createElement('th');
+    th.innerHTML = `<span style="display:inline-block;min-width:90px">${c}</span> <button data-col="${c}" title="Sort" style="margin-left:8px;background:transparent;border:0;color:var(--muted);cursor:pointer">⇅</button>`;
+    th.querySelector('button').addEventListener('click', ()=>sortByColumn(c));
+    tr.appendChild(th);
+  });
+  thead.appendChild(tr);
+}
+
+function renderPage(page){
+  currentPage = page;
+  const start = (page-1)*PAGE_SIZE;
+  const pageData = filtered.slice(start, start+PAGE_SIZE);
+  renderTableBody(pageData);
+  renderCards(pageData);
+  renderPager();
+}
+
+function renderTableBody(rows){
+  const tbody = document.getElementById('tbody'); tbody.innerHTML = '';
+  const cols = getCols();
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    cols.forEach(c => {
+      const td = document.createElement('td');
+      td.innerHTML = highlightMatch(escapeHtml(r[c]||''));
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+}
+
+function renderCards(rows){
+  const cards = document.getElementById('cards'); cards.innerHTML = '';
+  const cols = getCols();
+  rows.forEach(r => {
+    const div = document.createElement('div'); div.className = 'card';
+    const inner = cols.map(c => `<div class="row"><strong style="font-size:13px">${c}</strong><div>${highlightMatch(escapeHtml(r[c]||''))}</div></div>`).join('<hr style="opacity:0.06;margin:8px 0">');
+    div.innerHTML = inner;
+    cards.appendChild(div);
+  });
+}
+
+function renderPager(){
+  const pager = document.getElementById('pager'); pager.innerHTML = '';
+  const total = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const range = 5;
+  let start = Math.max(1, currentPage - Math.floor(range/2));
+  let end = Math.min(total, start + range - 1);
+  if(end - start < range - 1) start = Math.max(1, end - range + 1);
+
+  const info = document.createElement('div'); info.style.marginRight = 'auto'; info.className = 'muted';
+  info.textContent = `${filtered.length} results`;
+  pager.appendChild(info);
+
+  // prev
+  const prev = document.createElement('button'); prev.className = 'pageBtn'; prev.textContent = '◀'; prev.disabled = currentPage===1;
+  prev.addEventListener('click', ()=>renderPage(Math.max(1, currentPage-1)));
+  pager.appendChild(prev);
+
+  for(let p = start; p<=end; p++){
+    const btn = document.createElement('button'); btn.className='pageBtn'; btn.textContent = p;
+    if(p===currentPage) btn.classList.add('active');
+    btn.addEventListener('click', ()=>renderPage(p));
+    pager.appendChild(btn);
+  }
+
+  const next = document.createElement('button'); next.className='pageBtn'; next.textContent = '▶'; next.disabled = currentPage===total;
+  next.addEventListener('click', ()=>renderPage(Math.min(total, currentPage+1)));
+  pager.appendChild(next);
+}
+
+function escapeHtml(s){ return (s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function highlightMatch(text){
+  const q = document.getElementById('q').value.trim();
+  if(!q) return text;
+  try{
+    const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'ig');
+    return text.replace(re, m => `<span class="highlight">${m}</span>`);
+  }catch(e){ return text; }
+}
+
+// sorting
+let sortState = {};
+function sortByColumn(col){
+  const dir = sortState[col] === 'asc' ? 'desc' : 'asc';
+  sortState = {}; sortState[col]=dir;
+  filtered.sort((a,b) => {
+    const A = (a[col]||'').toLowerCase();
+    const B = (b[col]||'').toLowerCase();
+    if(A<B) return dir==='asc' ? -1 : 1;
+    if(A>B) return dir==='asc' ? 1 : -1;
+    return 0;
+  });
+  renderPage(1);
+}
+
+// filter/search
+function doFilter(){
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  if(!q){ filtered = data.slice(); renderPage(1); return; }
+  const cols = getCols();
+  filtered = data.filter(row => cols.some(c => (row[c]||'').toLowerCase().includes(q)));
+  renderPage(1);
+}
+
+// download filtered CSV
+function downloadFiltered(){
+  if(!filtered.length) return alert('No records to download');
+  const csv = Papa.unparse(filtered);
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'voter-export.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// events
+document.getElementById('downloadBtn').addEventListener('click', downloadFiltered);
+document.getElementById('clearBtn').addEventListener('click', ()=>{ document.getElementById('q').value = ''; doFilter(); });
+
+const debouncedFilter = debounce(doFilter, 200);
+document.getElementById('q').addEventListener('input', debouncedFilter);
+
+// start
+fetchCSV(CSV_URL);
+</script>
+</body>
+</html>
