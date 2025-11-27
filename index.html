@@ -1,340 +1,296 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Pragati Tai Bawankar — Voter Search</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Pragati Tai Bawankar - Shiv Sena</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 
-  <style>
-    :root{
-      --bhagwa1:#ff6a00;
-      --bhagwa2:#ff8800;
-      --white:#ffffff;
-      --light:#f8f8f8;
-      --muted:#696969;
-      --border:#ffe0c2;
-      --shadow:0 8px 28px rgba(0,0,0,0.15);
-      --radius:16px;
-    }
-    *{box-sizing:border-box;}
-    body{
-      margin:0;
-      font-family: "Poppins", sans-serif;
-      background:#fafafa;
-      color:#222;
+<style>
+    :root {
+        --orange-dark: #d35400;
+        --orange-light: #ffa559;
+        --white: #ffffff;
+        --muted: #6b7280;
+        --border-color: #ffb48a;
+        --shadow: 0 6px 25px rgba(0,0,0,0.08);
+        --radius: 16px;
     }
 
-    /* TOP FULL BHAGWA SECTION */
-    .heroBox{
-      width:100%;
-      padding:28px 18px;
-      background:linear-gradient(90deg, var(--bhagwa1), var(--bhagwa2));
-      border-bottom-left-radius:22px;
-      border-bottom-right-radius:22px;
-      box-shadow:0 5px 24px rgba(255,100,0,0.45);
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background: #f7f7f7;
+        color: #222;
     }
 
-    .heroContent{
-      max-width:1180px;
-      margin:0 auto;
-      display:flex;
-      align-items:center;
-      gap:20px;
-      color:white;
+    /* ORANGE HEADER */
+    .header {
+        width: 100%;
+        padding: 30px 20px;
+        background: linear-gradient(90deg, var(--orange-dark), #ff7b00);
+        border-bottom-left-radius: 30px;
+        border-bottom-right-radius: 30px;
+        box-shadow: 0 8px 25px rgba(255, 102, 0, 0.3);
+        color: white;
     }
 
-    .heroPhoto{
-      width:120px;height:120px;
-      border-radius:14px;
-      overflow:hidden;
-      border:3px solid white;
-      box-shadow:0 4px 16px rgba(0,0,0,0.25);
+    .header-content {
+        max-width: 1150px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        gap: 22px;
     }
 
-    .heroPhoto img{
-      width:100%;height:100%;object-fit:cover;
+    .header img {
+        width: 110px;
+        height: 110px;
+        border-radius: 16px;
+        border: 3px solid #fff;
+        object-fit: cover;
+        background: #fff;
     }
 
-    .heroText h1{
-      margin:0;
-      font-size:28px;
-      font-weight:800;
+    .header h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: 0.6px;
     }
 
-    .heroText p{
-      margin:4px 0 0;
-      font-size:15px;
-      opacity:0.95;
-      font-weight:400;
+    .tag {
+        background: #ffffff;
+        padding: 5px 12px;
+        border-radius: 999px;
+        color: #d35400;
+        margin-left: 10px;
+        font-size: 13px;
+        font-weight: bold;
+        border: 1px solid #ffe3c6;
     }
 
-    .tagSS{
-      display:inline-block;
-      margin-top:8px;
-      padding:5px 7px;
-      background:white;
-      color:#cc3300;
-      border-radius:7px;
-      font-size:12px;
-      font-weight:700;
+    .header p {
+        margin: 8px 0 0;
+        color: #fff8ed;
+        font-size: 14px;
     }
 
-    /* SEARCH BAR INSIDE BHAGWA AREA */
-    .searchWrap{
-      max-width:1180px;
-      margin:18px auto 0;
-      display:flex;
+    /* SEARCH BOX */
+    .search-area {
+        max-width: 1150px;
+        margin: 18px auto 0;
+        padding: 12px 16px;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+        display: flex;
+        gap: 14px;
+        align-items: center;
     }
 
-    .search{
-      flex:1;
-      display:flex;
-      align-items:center;
-      padding:12px 14px;
-      background:white;
-      border-radius:12px;
-      box-shadow:0 4px 18px rgba(0,0,0,0.15);
-      gap:10px;
+    .search-area input {
+        flex: 1;
+        font-size: 15px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        outline: none;
     }
 
-    .search svg{opacity:0.7}
-    .search input{
-      flex:1;
-      border:0;
-      outline:0;
-      font-size:15px;
-      color:#444;
-    }
-    .clearBtn{
-      background:transparent;border:0;color:#777;cursor:pointer;
+    .search-area button {
+        border: none;
+        background: #ff9151;
+        color: #fff;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
     }
 
-    /* WHITE CONTENT AREA BELOW */
-    .container{
-      max-width:1180px;
-      margin:20px auto;
-      padding:0 10px;
+    /* TABLE CARD */
+    .card {
+        max-width: 1150px;
+        margin: 25px auto;
+        background: #fff;
+        padding: 15px;
+        border-radius: var(--radius);
+        border: 2px solid var(--border-color);
+        box-shadow: var(--shadow);
     }
 
-    /* TABLE & CARD UI */
-    .tableWrap{
-      background:white;
-      border-radius:14px;
-      border:2px solid var(--border);
-      box-shadow:var(--shadow);
-      padding:8px;
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
     }
 
-    table{
-      width:100%;
-      border-collapse:collapse;
-      font-size:14px;
+    th {
+        text-align: left;
+        padding: 12px;
+        background: #fff4e9;
+        border-bottom: 2px solid #ffd7ba;
+        font-weight: 700;
+        color: #8b3200;
     }
 
-    thead th{
-      padding:12px 10px;
-      background:#fff3e0;
-      color:#bf4500;
-      border-bottom:2px solid #ffd2a1;
-      font-weight:700;
-      position:sticky;top:0;
+    td {
+        padding: 11px 12px;
+        border-bottom: 1px solid #ffe7d6;
     }
 
-    tbody tr{
-      border-bottom:1px solid #ffe4c8;
-      transition:0.2s;
+    tr:hover {
+        background: #fff9f3;
     }
 
-    tbody tr:hover{
-      background:#fff5eb;
+    .highlight {
+        background: #ffddb8;
+        padding: 2px 4px;
+        border-radius: 4px;
     }
 
-    td{
-      padding:12px 10px;
-      color:#333;
+    /* PAGINATION */
+    .pager {
+        margin-top: 12px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
     }
 
-    /* Mobile Cards */
-    .cards{display:none;}
-    @media(max-width:900px){
-      table{display:none;}
-      .cards{display:grid;gap:14px;}
-      .card{
-        background:white;
-        padding:12px;
-        border-radius:12px;
-        border:2px solid #ffd5b3;
-        box-shadow:0 4px 16px rgba(0,0,0,0.1);
-      }
-      .row{
-        display:flex;justify-content:space-between;margin-bottom:6px;
-      }
+    .pager button {
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 0;
+        cursor: pointer;
+        background: #ffd1ac;
+        color: #8b3200;
+        font-weight: bold;
     }
 
-    .highlight{
-      background:rgba(255,140,60,0.25);
-      padding:2px 4px;
-      border-radius:5px;
+    .pager button.active {
+        background: #ff8c38;
+        color: white;
     }
 
-    /* Pagination */
-    .pager{
-      margin-top:12px;
-      display:flex;
-      gap:8px;
-      justify-content:flex-end;
-      align-items:center;
-    }
-
-    .pageBtn{
-      padding:8px 10px;
-      border-radius:8px;
-      border:1px solid #ffcaa0;
-      background:white;
-      cursor:pointer;
-      color:#d05c00;
-      font-weight:600;
-    }
-
-    .pageBtn.active{
-      background:linear-gradient(90deg,#ffe1c7,#ffc48f);
-      color:#8c2a00;
-      border:0;
-    }
-
-    footer{
-      text-align:center;
-      font-size:13px;
-      margin-top:18px;
-      color:#666;
-    }
-  </style>
+</style>
 </head>
 
 <body>
 
-  <!-- BHAGWA HEADER SECTION -->
-  <div class="heroBox">
-    <div class="heroContent">
-      <div class="heroPhoto">
+<!-- ORANGE TOP HEADER -->
+<div class="header">
+    <div class="header-content">
         <img src="https://raw.githubusercontent.com/PRAGATIBAWANKAR1/Pragati-Tai-Bawankar/main/WhatsApp%20Image%202025-11-27%20at%205.00.54%20AM.jpeg">
-      </div>
 
-      <div class="heroText">
-        <h1>Pragati Tai Bawankar</h1>
-        <span class="tagSS">SHIV SENA</span>
-        <p>Smart Voter Search • Find EPIC, Name, Address, Booth & Ward Quickly</p>
-      </div>
+        <div>
+            <h1>
+                PRAGATI TAI BAWANKAR 
+                <span class="tag">SHIV SENA</span>
+            </h1>
+            <p>Advanced smart voter search system — fast, modern, and accurate.</p>
+        </div>
     </div>
+</div>
 
-    <!-- SEARCH BAR -->
-    <div class="searchWrap">
-      <div class="search">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-          <path d="M21 21l-4.35-4.35" stroke="#222" stroke-width="1.4" stroke-linecap="round"></path>
-          <circle cx="11" cy="11" r="6" stroke="#222" stroke-width="1.4"></circle>
-        </svg>
+<!-- SEARCH BAR -->
+<div class="search-area">
+    <input id="q" placeholder="Search Name / EPIC / Address / Ward...">
+    <button id="clearBtn">Clear</button>
+</div>
 
-        <input id="q" placeholder="Search name / EPIC / address / ward...">
-
-        <button id="clearBtn" class="clearBtn">✕</button>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- WHITE CONTENT SECTION -->
-  <div class="container">
-
-    <div id="loading" style="padding:10px;color:#ff6a00;font-weight:600;">Loading voter list...</div>
-
-    <div class="tableWrap">
-      <table>
+<!-- RESULTS AREA -->
+<div class="card">
+    <div id="loading">Loading CSV…</div>
+    <table>
         <thead id="thead"></thead>
         <tbody id="tbody"></tbody>
-      </table>
-
-      <div class="cards" id="cards"></div>
-
-      <div class="pager" id="pager"></div>
-    </div>
-
-    <footer>Data updates directly from GitHub. Auto-reflect after refresh.</footer>
-
-  </div>
-
+    </table>
+    <div class="pager" id="pager"></div>
+</div>
 
 <script>
-const CSV_URL = "https://raw.githubusercontent.com/PRAGATIBAWANKAR1/Pragati-Tai-Bawankar/main/VOTERLISTALL8.csv";
+
+const CSV_URL =
+"https://raw.githubusercontent.com/PRAGATIBAWANKAR1/Pragati-Tai-Bawankar/main/VOTERLISTALL8.csv";
+
+let data = [];
+let filtered = [];
+let headers = [];
+let page = 1;
 const PAGE_SIZE = 30;
 
-let data=[], filtered=[], headers=[], page=1;
-function escapeHtml(s){return (s||'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-function highlight(txt){
-  const q=document.getElementById('q').value.trim();
-  if(!q) return txt;
-  const r=new RegExp(q,'ig');
-  return txt.replace(r,m=>`<span class="highlight">${m}</span>`);
+function escapeHTML(s){ return (s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+function highlight(text){
+    const q = document.getElementById("q").value.trim();
+    if(!q) return text;
+    const re = new RegExp(q,"gi");
+    return text.replace(re, m => `<span class="highlight">${m}</span>`);
 }
 
 Papa.parse(CSV_URL,{
-  download:true,header:true,skipEmptyLines:true,
-  complete:(res)=>{
-    data=res.data; headers=res.meta.fields;
-    filtered=data.slice();
-    document.getElementById('loading').style.display="none";
-    renderHead(); render();
-  }
+    download:true,
+    header:true,
+    complete:function(res){
+        data=res.data;
+        headers=res.meta.fields;
+        filtered=data;
+        render();
+        document.getElementById('loading').style.display="none";
+    }
 });
 
-function cols(){ return headers.slice(0,8); }
+document.getElementById("q").addEventListener("input", ()=>{
+    const q=document.getElementById("q").value.toLowerCase();
+    filtered=data.filter(row=>{
+        return headers.some(h=>String(row[h]).toLowerCase().includes(q));
+    });
+    page=1;
+    render();
+});
 
-function renderHead(){
-  const th=cols().map(c=>`<th>${c}</th>`).join("");
-  document.getElementById('thead').innerHTML=`<tr>${th}</tr>`;
-}
+document.getElementById("clearBtn").onclick=function(){
+    document.getElementById("q").value="";
+    filtered=data;
+    render();
+};
 
 function render(){
-  const start=(page-1)*PAGE_SIZE;
-  const rows=filtered.slice(start,start+PAGE_SIZE);
+    // Head
+    const thead=document.getElementById("thead");
+    thead.innerHTML="<tr>"+headers.slice(0,8).map(h=>`<th>${h}</th>`).join("")+"</tr>";
 
-  // Table
-  document.getElementById('tbody').innerHTML=rows.map(r=>{
-    return `<tr>`+cols().map(c=>`<td>${highlight(escapeHtml(r[c]||''))}</td>`).join("")+`</tr>`;
-  }).join("");
+    // Body
+    const tbody=document.getElementById("tbody");
+    tbody.innerHTML="";
+    const start=(page-1)*PAGE_SIZE;
+    const rows=filtered.slice(start,start+PAGE_SIZE);
+    rows.forEach(r=>{
+        const tr=document.createElement("tr");
+        headers.slice(0,8).forEach(h=>{
+            const td=document.createElement("td");
+            td.innerHTML=highlight(escapeHTML(r[h]||""));
+            tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+    });
 
-  // Cards (mobile)
-  document.getElementById('cards').innerHTML=rows.map(r=>{
-    return `<div class="card">`+
-      cols().map(c=>`<div class="row"><b>${c}</b><span>${highlight(escapeHtml(r[c]||''))}</span></div>`).join("")+
-    `</div>`;
-  }).join("");
+    // Pagination
+    const pager=document.getElementById("pager");
+    pager.innerHTML="";
+    const pages=Math.ceil(filtered.length/PAGE_SIZE);
 
-  renderPager();
+    for(let p=1; p<=pages; p++){
+        const btn=document.createElement("button");
+        btn.textContent=p;
+        if(p===page) btn.classList.add("active");
+        btn.onclick=()=>{ page=p; render(); };
+        pager.appendChild(btn);
+    }
 }
 
-function renderPager(){
-  const total=Math.ceil(filtered.length/PAGE_SIZE);
-  const p=document.getElementById('pager'); p.innerHTML="";
-  for(let i=1;i<=total;i++){
-    p.innerHTML+=`<button class="pageBtn ${i===page?"active":""}" onclick="page=${i};render()">${i}</button>`;
-  }
-}
-
-document.getElementById('q').addEventListener('input',()=>{
-  const q=document.getElementById('q').value.toLowerCase();
-  filtered=data.filter(r=>cols().some(c=>(r[c]||"").toLowerCase().includes(q)));
-  page=1;
-  render();
-});
-
-document.getElementById('clearBtn').onclick=()=>{
-  document.getElementById('q').value="";
-  filtered=data.slice();
-  page=1; render();
-};
 </script>
 
 </body>
