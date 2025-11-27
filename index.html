@@ -10,18 +10,17 @@
 
   <style>
     :root{
-      /* --- NEW COLOR SCHEME (ORANGE) --- */
-      --bg: #fff7ed; /* Very light orange tint for page background */
+      /* ORANGE THEME */
+      --bg: #fff7ed;
       --card: #ffffff;
       --text: #0f172a;
       --muted: #64748b;
       
-      --accent: #f97316; /* Main Orange */
-      --accent-dark: #ea580c; /* Darker Orange for gradients */
+      --accent: #f97316; 
+      --accent-dark: #ea580c;
       --accent-soft: rgba(249, 115, 22, 0.1);
       
-      --border: #fed7aa; /* Faded Orange Border */
-      
+      --border: #fed7aa;
       --shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       --radius: 12px;
     }
@@ -35,157 +34,110 @@
       padding: 20px;
       min-height: 100vh;
     }
-    .container{max-width:1100px;margin:0 auto}
+    .container{max-width:1280px; margin:0 auto}
 
-    /* --- HERO SECTION (UPDATED TO ORANGE) --- */
+    /* HERO SECTION */
     .hero{
-      display: flex; 
-      gap: 20px; 
-      align-items: center;
-      padding: 24px; 
-      border-radius: var(--radius);
-      
-      /* Orange Gradient Background */
+      display: flex; gap: 20px; align-items: center;
+      padding: 24px; border-radius: var(--radius);
       background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
       color: white; 
-      
       box-shadow: var(--shadow);
-      margin-bottom: 24px; 
-      border: 1px solid var(--border);
-      position: relative;
+      margin-bottom: 24px; border: 1px solid var(--border);
     }
-
     .photo{
       width: 90px; height: 90px; border-radius: 50%;
       overflow: hidden; flex-shrink: 0; border: 3px solid #fff;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2); background: white;
     }
     .photo img{width:100%; height:100%; object-fit:cover}
 
-    .heading{
-      flex-grow: 1;
-    }
-    .heading h1{
-      margin: 0; 
-      font-size: 22px; 
-      color: white; /* White text for contrast */
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    }
-    .heading p{
-      margin: 6px 0 0 0; 
-      color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
-      font-size: 15px; 
-      line-height: 1.5;
-    }
+    .heading{flex-grow: 1;}
+    .heading h1{margin: 0; font-size: 22px; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.1);}
+    .heading p{margin: 6px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 15px;}
 
-    /* Agency Branding Style */
     .agency-branding {
-      font-size: 16px;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 0.95);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      white-space: nowrap;
-      border-left: 1px solid rgba(255,255,255,0.3);
-      padding-left: 20px;
+      font-size: 16px; font-weight: 700; color: rgba(255, 255, 255, 0.95);
+      text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;
+      border-left: 1px solid rgba(255,255,255,0.3); padding-left: 20px;
     }
 
     .tag{
       display: inline-block; vertical-align: middle;
       padding: 4px 12px; border-radius: 20px;
-      background: white; /* White background for tag */
-      color: var(--accent-dark); /* Orange text */
+      background: white; color: var(--accent-dark);
       font-weight: 700; font-size: 12px; margin-left: 10px; 
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
-    /* Search Controls */
+    /* CONTROLS */
     .controls{display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap; align-items:center}
-    .search-wrap{
-      flex:1; position:relative; min-width:280px;
-    }
+    .search-wrap{flex:1; position:relative; min-width:280px;}
     .search-wrap input{
       width:100%; padding:12px 12px 12px 42px;
-      border-radius:10px; 
-      border:1px solid var(--border); /* Faded orange border */
-      font-size:16px; outline:none; transition: all 0.2s;
-      background: var(--card);
+      border-radius:10px; border:1px solid var(--border);
+      font-size:16px; outline:none; background: var(--card);
     }
-    .search-wrap input:focus{
-      border-color: var(--accent); 
-      box-shadow: 0 0 0 3px var(--accent-soft);
-    }
-    .search-icon{
-      position:absolute; left:14px; top:50%; transform:translateY(-50%);
-      color:var(--muted); opacity:0.7; pointer-events:none;
-    }
+    .search-wrap input:focus{border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);}
+    .search-icon{position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--muted); opacity:0.7;}
     .clear-btn{
       position:absolute; right:12px; top:50%; transform:translateY(-50%);
-      background:none; border:none; cursor:pointer; color:var(--muted); font-size:18px; padding:4px;
-      display:none; 
+      background:none; border:none; cursor:pointer; color:var(--muted); font-size:18px; padding:4px; display:none; 
     }
-    .meta-counts{font-size:14px; color:var(--muted); white-space:nowrap}
 
-    /* Data Display */
+    /* TABLE STYLES */
     .table-container{
       background:var(--card); border-radius:var(--radius);
-      box-shadow:var(--shadow); overflow:hidden; 
-      border:1px solid var(--border); /* Faded orange border */
+      box-shadow:var(--shadow); overflow-x:auto; 
+      border:1px solid var(--border);
     }
-    
-    /* Desktop Table */
-    table{width:100%; border-collapse:collapse; font-size:14px}
+    table{width:100%; border-collapse:collapse; font-size:14px; min-width: 900px;}
     thead{background: #fff7ed; border-bottom:1px solid var(--border)}
     th{text-align:left; padding:14px; font-weight:600; color:#475569; white-space:nowrap}
     th button{border:none; background:none; cursor:pointer; font-weight:bold; color:var(--muted)}
-    td{padding:12px 14px; border-bottom:1px solid #fff1f2; color:#334155}
-    tr:last-child td{border-bottom:none}
-    tr:hover td{background:#fff7ed} /* Orange hover tint */
+    
+    td{padding:12px 14px; border-bottom:1px solid #fff1f2; color:#334155; vertical-align: top;}
+    
+    /* Address column wrap */
+    td:last-child {
+      white-space: normal;
+      min-width: 250px;
+      line-height: 1.5;
+    }
+
+    tr:hover td{background:#fff7ed}
     .highlight{background:#ffedd5; color:#c2410c; font-weight:600; padding:0 2px; border-radius:2px}
 
-    /* Mobile Cards */
+    /* MOBILE CARDS */
     .mobile-cards{display:none; gap:16px}
     .m-card{
-      background:var(--card); padding:16px; border-radius:10px;
-      border:1px solid var(--border); /* Faded orange border */
-      box-shadow:0 1px 3px rgba(0,0,0,0.05);
+      background:var(--card); border-radius:10px;
+      border:1px solid var(--border); box-shadow:0 1px 3px rgba(0,0,0,0.05);
+      padding: 16px; /* Added padding here */
     }
-    .m-row{margin-bottom:8px; display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9; padding-bottom:8px}
-    .m-row:last-child{border:0; margin:0; padding:0}
-    .m-label{font-weight:600; font-size:13px; color:var(--muted)}
-    .m-val{font-size:14px; text-align:right; max-width:60%}
+    .m-row{margin-bottom:8px; display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9; padding-bottom:8px; flex-wrap: wrap;}
+    .m-label{font-weight:600; font-size:13px; color:var(--muted); width: 100%; margin-bottom: 2px;}
+    .m-val{font-size:14px; color: #334155; width: 100%;}
 
-    @media (max-width: 850px){
+    @media (max-width: 900px){
       table{display:none}
       .mobile-cards{display:grid; grid-template-columns:1fr;}
-      .hero{flex-direction:column; text-align:center; padding-bottom: 30px;}
-      .controls{flex-direction:column; align-items:stretch}
+      .hero{flex-direction:column; text-align:center;}
       .agency-branding {
-        border-left: none;
-        border-top: 1px solid rgba(255,255,255,0.3);
-        padding-left: 0;
-        padding-top: 10px;
-        margin-top: 10px;
-        width: 100%;
-        text-align: center;
+        border-left: none; border-top: 1px solid rgba(255,255,255,0.3);
+        padding-left: 0; padding-top: 10px; margin-top: 10px; width: 100%;
       }
     }
 
-    /* Pagination */
+    /* PAGER */
     .pager{
       padding:16px; display:flex; gap:6px; justify-content:center; align-items:center;
-      background: #fff7ed; 
-      border-top:1px solid var(--border);
+      background: #fff7ed; border-top:1px solid var(--border);
     }
     .page-btn{
       border:1px solid var(--border); background:white;
       padding:8px 14px; border-radius:6px; cursor:pointer; color:#475569;
-      transition:all 0.2s;
     }
-    .page-btn:hover:not(:disabled){background:#fed7aa; color:#0f172a}
     .page-btn.active{background:var(--accent); color:white; border-color:var(--accent)}
-    .page-btn:disabled{opacity:0.5; cursor:not-allowed}
 
     #statusMsg{text-align:center; padding:40px; color:var(--muted); font-style:italic}
     footer{text-align:center; margin-top:30px; font-size:13px; color:#94a3b8}
@@ -196,85 +148,75 @@
 <div class="container">
   <div class="hero">
     <div class="photo">
-      <img src="https://raw.githubusercontent.com/PRAGATIBAWANKAR1/Pragati-Tai-Bawankar/main/WhatsApp%20Image%202025-11-27%20at%205.00.54%20AM.jpeg" alt="Pragati Tai Bawankar">
+      <img src="https://raw.githubusercontent.com/PRAGATIBAWANKAR1/Pragati-Tai-Bawankar/main/WhatsApp%20Image%202025-11-27%20at%205.00.54%20AM.jpeg" alt="Pragati Tai">
     </div>
     <div class="heading">
       <h1>Pragati Tai Bawankar <span class="tag">Shiv Sena</span></h1>
-      <p>Official Voter Search Portal. Find voter details by Name, EPIC No, or Address instantly.</p>
+      <p>Official Voter Search Portal</p>
     </div>
-    <div class="agency-branding">
-      The SM Production
-    </div>
+    <div class="agency-branding">The SM Production</div>
   </div>
 
   <div class="controls">
     <div class="search-wrap">
       <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      <input id="q" type="text" placeholder="Type to search (Name, EPIC, Ward...)" autocomplete="off">
-      <button id="clearBtn" class="clear-btn" title="Clear">✕</button>
+      <input id="q" type="text" placeholder="Search by Name, EPIC, Ward, Address..." autocomplete="off">
+      <button id="clearBtn" class="clear-btn">✕</button>
     </div>
-    <div class="meta-counts">
-      Showing <strong id="showCount">0</strong> of <strong id="totalCount">0</strong> records
-    </div>
+    <div class="meta-counts">Showing <strong id="showCount">0</strong> of <strong id="totalCount">0</strong> records</div>
   </div>
 
   <div class="table-container">
-    <div id="statusMsg">Loading voter database...</div>
-    
+    <div id="statusMsg">Loading database...</div>
     <table id="dataTable">
       <thead id="thead"></thead>
       <tbody id="tbody"></tbody>
     </table>
-
     <div id="cards" class="mobile-cards"></div>
-
     <div id="pager" class="pager" style="display:none"></div>
   </div>
 
-  <footer>
-    Data sourced directly from GitHub Repository. <br>Last updated: Real-time.
-  </footer>
+  <footer>Data sourced from GitHub • The SM Production</footer>
 </div>
 
 <script>
-/* --- CONFIGURATION --- */
+/* CONFIG */
 const CSV_URL = "https://raw.githubusercontent.com/PRAGATIBAWANKAR1/Pragati-Tai-Bawankar/main/VOTERLISTALL8.csv";
-const PAGE_SIZE = 25; 
-const COLUMNS_TO_SHOW = 7; 
+const PAGE_SIZE = 25;
+const COLUMNS_TO_SHOW = 12; // Sufficient limit to show all columns
 
-/* --- STATE MANAGEMENT --- */
-let rawData = [];
-let filteredData = [];
-let headers = [];
-let currentPage = 1;
-let sortCol = '';
-let sortAsc = true;
+/* STATE */
+let rawData=[], filteredData=[], headers=[], currentPage=1, sortCol='', sortAsc=true;
 
-/* --- INITIALIZATION --- */
 function init(){
   Papa.parse(CSV_URL, {
-    download: true,
-    header: true,
-    skipEmptyLines: true,
-    worker: true, 
+    download: true, header: true, skipEmptyLines: true, worker: true,
     complete: function(results) {
       if(results.data && results.data.length > 0){
-        rawData = results.data.filter(row => Object.values(row).some(val => val));
-        headers = results.meta.fields || Object.keys(rawData[0]);
+        
+        // --- 🔑 CRITICAL FIX: Clean up headers and data keys for proper mapping ---
+        headers = (results.meta.fields || Object.keys(results.data[0] || {})).map(h => h.trim());
+        rawData = results.data.map(row => {
+            const cleanRow = {};
+            // Re-map row data using cleaned headers
+            Object.keys(row).forEach(key => {
+                cleanRow[key.trim()] = (row[key] || '').toString().trim();
+            });
+            return cleanRow;
+        }).filter(r => Object.values(r).some(v => v));
+        // --------------------------------------------------------------------------
+        
         filteredData = [...rawData];
         setupTableHeaders();
         updateUI(true);
       } else {
-        document.getElementById('statusMsg').textContent = "No data found in the CSV file.";
+        document.getElementById('statusMsg').textContent = "No data found.";
       }
     },
-    error: function(err){
-      document.getElementById('statusMsg').innerHTML = `Error loading data.<br><small>${err.message}</small>`;
-    }
+    error: (err) => document.getElementById('statusMsg').textContent = "Error loading data."
   });
 }
 
-/* --- CORE FUNCTIONS --- */
 function updateUI(resetPage = false){
   if(resetPage) currentPage = 1;
   const total = filteredData.length;
@@ -282,8 +224,8 @@ function updateUI(resetPage = false){
   document.getElementById('showCount').textContent = total.toLocaleString();
 
   if(total === 0){
-    document.getElementById('statusMsg').textContent = "No records found matching your search.";
     document.getElementById('statusMsg').style.display = 'block';
+    document.getElementById('statusMsg').textContent = "No records found.";
     document.getElementById('dataTable').style.display = 'none';
     document.getElementById('cards').style.display = 'none';
     document.getElementById('pager').style.display = 'none';
@@ -292,7 +234,7 @@ function updateUI(resetPage = false){
 
   document.getElementById('statusMsg').style.display = 'none';
   document.getElementById('dataTable').style.display = 'table';
-  document.getElementById('cards').style.display = (window.innerWidth <= 850) ? 'grid' : 'none';
+  document.getElementById('cards').style.display = (window.innerWidth <= 900) ? 'grid' : 'none';
   document.getElementById('pager').style.display = 'flex';
 
   const start = (currentPage - 1) * PAGE_SIZE;
@@ -305,8 +247,7 @@ function updateUI(resetPage = false){
 }
 
 function renderTable(rows){
-  const tbody = document.getElementById('tbody');
-  tbody.innerHTML = '';
+  const tbody = document.getElementById('tbody'); tbody.innerHTML = '';
   const displayCols = headers.slice(0, COLUMNS_TO_SHOW);
 
   rows.forEach(row => {
@@ -321,20 +262,15 @@ function renderTable(rows){
 }
 
 function renderCards(rows){
-  const container = document.getElementById('cards');
-  container.innerHTML = '';
+  const container = document.getElementById('cards'); container.innerHTML = '';
   const displayCols = headers.slice(0, COLUMNS_TO_SHOW);
 
   rows.forEach(row => {
-    const card = document.createElement('div');
-    card.className = 'm-card';
+    const card = document.createElement('div'); card.className = 'm-card';
     let html = '';
     displayCols.forEach(col => {
-      html += `
-        <div class="m-row">
-          <span class="m-label">${escapeHtml(col)}</span>
-          <span class="m-val">${highlightText(row[col] || '')}</span>
-        </div>`;
+      // For mobile view, address column will wrap naturally
+      html += `<div class="m-row"><span class="m-label">${escapeHtml(col)}</span><span class="m-val">${highlightText(row[col] || '')}</span></div>`;
     });
     card.innerHTML = html;
     container.appendChild(card);
@@ -342,7 +278,7 @@ function renderCards(rows){
 }
 
 function setupTableHeaders(){
-  const thead = document.getElementById('thead');
+  const thead = document.getElementById('thead'); thead.innerHTML = '';
   const tr = document.createElement('tr');
   headers.slice(0, COLUMNS_TO_SHOW).forEach(col => {
     const th = document.createElement('th');
@@ -352,7 +288,6 @@ function setupTableHeaders(){
   thead.appendChild(tr);
 }
 
-/* --- SEARCH & SORT --- */
 function highlightText(text){
   const term = document.getElementById('q').value.trim();
   if(!term || !text) return escapeHtml(text);
@@ -363,75 +298,45 @@ function highlightText(text){
 function filterData(){
   const term = document.getElementById('q').value.toLowerCase().trim();
   document.getElementById('clearBtn').style.display = term ? 'block' : 'none';
-
-  if(!term){
-    filteredData = [...rawData];
-  } else {
-    filteredData = rawData.filter(row => {
-      return Object.values(row).some(val => String(val).toLowerCase().includes(term));
-    });
-  }
+  if(!term) filteredData = [...rawData];
+  else filteredData = rawData.filter(r => {
+      // Search across all available headers
+      return headers.slice(0, COLUMNS_TO_SHOW).some(h => String(r[h] || '').toLowerCase().includes(term));
+  });
   updateUI(true);
 }
 
 function sortData(col){
   if(sortCol === col) sortAsc = !sortAsc;
   else { sortCol = col; sortAsc = true; }
-  filteredData.sort((a, b) => {
-    const valA = (a[col] || '').toLowerCase();
-    const valB = (b[col] || '').toLowerCase();
-    if(valA < valB) return sortAsc ? -1 : 1;
-    if(valA > valB) return sortAsc ? 1 : -1;
-    return 0;
+  filteredData.sort((a,b) => {
+    const A = (a[col]||'').toLowerCase(), B = (b[col]||'').toLowerCase();
+    return (A<B ? -1 : 1) * (sortAsc ? 1 : -1);
   });
   updateUI(true);
 }
 
-/* --- UTILS --- */
-function renderPager(totalItems){
-  const totalPages = Math.ceil(totalItems / PAGE_SIZE);
-  const pager = document.getElementById('pager');
-  pager.innerHTML = '';
+function renderPager(total){
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const pager = document.getElementById('pager'); pager.innerHTML = '';
   if(totalPages <= 1) return;
-  
-  const createBtn = (text, page, active=false, disabled=false) => {
-    const btn = document.createElement('button');
-    btn.className = `page-btn ${active ? 'active' : ''}`;
-    btn.textContent = text;
-    btn.disabled = disabled;
-    btn.onclick = () => { currentPage = page; updateUI(); window.scrollTo(0,0); };
-    return btn;
+  const btn = (t, p, d) => {
+    const b = document.createElement('button'); b.className = `page-btn ${p===currentPage?'active':''}`;
+    b.textContent = t; b.disabled = d; b.onclick = () => { currentPage = p; updateUI(); window.scrollTo(0,0); };
+    pager.appendChild(b);
   };
-
-  pager.appendChild(createBtn('Prev', currentPage - 1, false, currentPage === 1));
-  let start = Math.max(1, currentPage - 2);
-  let end = Math.min(totalPages, start + 4);
-  for(let i=start; i<=end; i++){
-    pager.appendChild(createBtn(i, i, i === currentPage));
-  }
-  pager.appendChild(createBtn('Next', currentPage + 1, false, currentPage === totalPages));
+  btn('Prev', currentPage-1, currentPage===1);
+  let start = Math.max(1, currentPage-2), end = Math.min(totalPages, start+4);
+  for(let i=start; i<=end; i++) btn(i, i, false);
+  btn('Next', currentPage+1, currentPage===totalPages);
 }
 
-function escapeHtml(text) {
-  if (text == null) return '';
-  return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-}
+function escapeHtml(s){ return String(s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
-/* --- EVENTS --- */
-let timeout = null;
-document.getElementById('q').addEventListener('input', () => {
-  clearTimeout(timeout);
-  timeout = setTimeout(filterData, 300);
-});
-document.getElementById('clearBtn').addEventListener('click', () => {
-  document.getElementById('q').value = '';
-  filterData();
-});
-window.addEventListener('resize', () => {
-  const isMobile = window.innerWidth <= 850;
-  document.getElementById('dataTable').style.display = isMobile ? 'none' : 'table';
-  document.getElementById('cards').style.display = isMobile ? 'grid' : 'none';
-});
+let tOut;
+document.getElementById('q').addEventListener('input', () => { clearTimeout(tOut); tOut=setTimeout(filterData, 300); });
+document.getElementById('clearBtn').addEventListener('click', () => { document.getElementById('q').value=''; filterData(); });
+window.addEventListener('resize', () => { updateUI(); });
 
 init();
 </script>
