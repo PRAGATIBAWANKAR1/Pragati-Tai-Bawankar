@@ -84,17 +84,18 @@
       background:none; border:none; cursor:pointer; color:var(--muted); font-size:18px; padding:4px; display:none; 
     }
 
-    /* --- TABLE STYLES (COMPACT FORMAT) --- */
+    /* --- TABLE STYLES (COMPACT FORMAT WITH SCROLL) --- */
     .table-container{
       background:var(--card); border-radius:var(--radius);
-      box-shadow:var(--shadow); overflow-x:auto; 
+      box-shadow:var(--shadow); 
+      overflow-x:auto; /* Ensures horizontal scrolling on small screens/mobile */
       border:1px solid var(--border);
     }
     table{
         width:100%; 
         border-collapse:collapse; 
-        font-size:13px; /* Smaller Font */
-        min-width: 1000px; /* Ensure space for 9 columns */
+        font-size:13px;
+        min-width: 1000px; /* Minimum width to show all columns */
     }
     thead{background: #fff7ed; border-bottom:1px solid var(--border)}
     
@@ -112,20 +113,10 @@
     tr:hover td{background:#fff7ed}
     .highlight{background:#ffedd5; color:#c2410c; font-weight:600; padding:0 2px; border-radius:2px}
 
-    /* MOBILE CARDS - Adjusted for compactness */
-    .mobile-cards{display:none; gap:12px} /* Reduced gap */
-    .m-card{
-      background:var(--card); border-radius:10px;
-      border:1px solid var(--border); box-shadow:0 1px 3px rgba(0,0,0,0.05);
-      padding: 12px; /* Reduced padding */
-    }
-    .m-row{margin-bottom:6px; display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9; padding-bottom:6px; flex-wrap: wrap;}
-    .m-label{font-weight:600; font-size:12px; color:var(--muted); width: 100%; margin-bottom: 2px;} /* Smaller Font */
-    .m-val{font-size:13px; color: #334155; width: 100%;} /* Smaller Font */
-
+    /* Mobile Cards are hidden to enforce table view */
+    .mobile-cards{display:none !important;} 
+    
     @media (max-width: 900px){
-      table{display:none}
-      .mobile-cards{display:grid; grid-template-columns:1fr;}
       .hero{flex-direction:column; text-align:center;}
       .agency-branding {
         border-left: none; border-top: 1px solid rgba(255,255,255,0.3);
@@ -135,13 +126,13 @@
 
     /* PAGER */
     .pager{
-      padding:12px; /* Reduced padding */
+      padding:12px; 
       display:flex; gap:6px; justify-content:center; align-items:center;
       background: #fff7ed; border-top:1px solid var(--border);
     }
     .page-btn{
       border:1px solid var(--border); background:white;
-      padding:6px 10px; /* Reduced padding */
+      padding:6px 10px; 
       border-radius:6px; cursor:pointer; color:#475569;
       font-size: 13px;
     }
@@ -180,7 +171,9 @@
       <thead id="thead"></thead>
       <tbody id="tbody"></tbody>
     </table>
+    
     <div id="cards" class="mobile-cards"></div>
+    
     <div id="pager" class="pager" style="display:none"></div>
   </div>
 
@@ -191,6 +184,7 @@
 /* CONFIG */
 const CSV_URL = "https://raw.githubusercontent.com/PRAGATIBAWANKAR1/Pragati-Tai-Bawankar/main/VOTERLISTALL8.csv";
 const PAGE_SIZE = 25;
+// COLUMNS_TO_SHOW is now only used as an upper limit, not a strict slicer
 const COLUMNS_TO_SHOW = 12; 
 
 /* STATE */
@@ -203,6 +197,7 @@ function init(){
       if(results.data && results.data.length > 0){
         
         // CRITICAL FIX: Clean up headers and data keys for proper mapping
+        // This ensures all columns are correctly mapped, regardless of whitespace in the CSV header.
         headers = (results.meta.fields || Object.keys(results.data[0] || {})).map(h => h.trim());
         rawData = results.data.map(row => {
             const cleanRow = {};
@@ -212,7 +207,6 @@ function init(){
             });
             return cleanRow;
         }).filter(r => Object.values(r).some(v => v));
-        // End of Fix
         
         filteredData = [...rawData];
         setupTableHeaders();
@@ -235,14 +229,12 @@ function updateUI(resetPage = false){
     document.getElementById('statusMsg').style.display = 'block';
     document.getElementById('statusMsg').textContent = "No records found.";
     document.getElementById('dataTable').style.display = 'none';
-    document.getElementById('cards').style.display = 'none';
     document.getElementById('pager').style.display = 'none';
     return;
   }
 
   document.getElementById('statusMsg').style.display = 'none';
   document.getElementById('dataTable').style.display = 'table';
-  document.getElementById('cards').style.display = (window.innerWidth <= 900) ? 'grid' : 'none';
   document.getElementById('pager').style.display = 'flex';
 
   const start = (currentPage - 1) * PAGE_SIZE;
@@ -250,13 +242,13 @@ function updateUI(resetPage = false){
   const pageData = filteredData.slice(start, end);
 
   renderTable(pageData);
-  renderCards(pageData);
   renderPager(total);
 }
 
 function renderTable(rows){
   const tbody = document.getElementById('tbody'); tbody.innerHTML = '';
-  const displayCols = headers.slice(0, COLUMNS_TO_SHOW);
+  // Use the full headers list to ensure ALL columns display
+  const displayCols = headers; 
 
   rows.forEach(row => {
     const tr = document.createElement('tr');
@@ -269,25 +261,11 @@ function renderTable(rows){
   });
 }
 
-function renderCards(rows){
-  const container = document.getElementById('cards'); container.innerHTML = '';
-  const displayCols = headers.slice(0, COLUMNS_TO_SHOW);
-
-  rows.forEach(row => {
-    const card = document.createElement('div'); card.className = 'm-card';
-    let html = '';
-    displayCols.forEach(col => {
-      html += `<div class="m-row"><span class="m-label">${escapeHtml(col)}</span><span class="m-val">${highlightText(row[col] || '')}</span></div>`;
-    });
-    card.innerHTML = html;
-    container.appendChild(card);
-  });
-}
-
 function setupTableHeaders(){
   const thead = document.getElementById('thead'); thead.innerHTML = '';
   const tr = document.createElement('tr');
-  headers.slice(0, COLUMNS_TO_SHOW).forEach(col => {
+  // Use the full headers list to set up ALL column headers
+  headers.forEach(col => {
     const th = document.createElement('th');
     th.innerHTML = `${escapeHtml(col)} <button onclick="sortData('${escapeHtml(col)}')">⇅</button>`;
     tr.appendChild(th);
@@ -307,7 +285,8 @@ function filterData(){
   document.getElementById('clearBtn').style.display = term ? 'block' : 'none';
   if(!term) filteredData = [...rawData];
   else filteredData = rawData.filter(r => {
-      return headers.slice(0, COLUMNS_TO_SHOW).some(h => String(r[h] || '').toLowerCase().includes(term));
+      // Search across all available headers
+      return headers.some(h => String(r[h] || '').toLowerCase().includes(term));
   });
   updateUI(true);
 }
