@@ -1,297 +1,439 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Pragati Tai Bawankar - Shiv Sena</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="theme-color" content="#f97316">
+  <title>Pragati Tai Bawankar (Shiv Sena) — Voter Search</title>
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 
-<style>
-    :root {
-        --orange-dark: #d35400;
-        --orange-light: #ffa559;
-        --white: #ffffff;
-        --muted: #6b7280;
-        --border-color: #ffb48a;
-        --shadow: 0 6px 25px rgba(0,0,0,0.08);
-        --radius: 16px;
+  <style>
+    :root{
+      /* --- NEW COLOR SCHEME (ORANGE) --- */
+      --bg: #fff7ed; /* Very light orange tint for page background */
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      
+      --accent: #f97316; /* Main Orange */
+      --accent-dark: #ea580c; /* Darker Orange for gradients */
+      --accent-soft: rgba(249, 115, 22, 0.1);
+      
+      --border: #fed7aa; /* Faded Orange Border */
+      
+      --shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --radius: 12px;
     }
 
-    * { box-sizing: border-box; }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container{max-width:1100px;margin:0 auto}
 
-    body {
-        margin: 0;
-        font-family: "Poppins", sans-serif;
-        background: #f7f7f7;
-        color: #222;
+    /* --- HERO SECTION (UPDATED TO ORANGE) --- */
+    .hero{
+      display: flex; 
+      gap: 20px; 
+      align-items: center;
+      padding: 24px; 
+      border-radius: var(--radius);
+      
+      /* Orange Gradient Background */
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: white; 
+      
+      box-shadow: var(--shadow);
+      margin-bottom: 24px; 
+      border: 1px solid var(--border);
+      position: relative;
     }
 
-    /* ORANGE HEADER */
-    .header {
+    .photo{
+      width: 90px; height: 90px; border-radius: 50%;
+      overflow: hidden; flex-shrink: 0; border: 3px solid #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      background: white;
+    }
+    .photo img{width:100%; height:100%; object-fit:cover}
+
+    .heading{
+      flex-grow: 1;
+    }
+    .heading h1{
+      margin: 0; 
+      font-size: 22px; 
+      color: white; /* White text for contrast */
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .heading p{
+      margin: 6px 0 0 0; 
+      color: rgba(255, 255, 255, 0.9); /* Slightly transparent white */
+      font-size: 15px; 
+      line-height: 1.5;
+    }
+
+    /* Agency Branding Style */
+    .agency-branding {
+      font-size: 16px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.95);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      border-left: 1px solid rgba(255,255,255,0.3);
+      padding-left: 20px;
+    }
+
+    .tag{
+      display: inline-block; vertical-align: middle;
+      padding: 4px 12px; border-radius: 20px;
+      background: white; /* White background for tag */
+      color: var(--accent-dark); /* Orange text */
+      font-weight: 700; font-size: 12px; margin-left: 10px; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Search Controls */
+    .controls{display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap; align-items:center}
+    .search-wrap{
+      flex:1; position:relative; min-width:280px;
+    }
+    .search-wrap input{
+      width:100%; padding:12px 12px 12px 42px;
+      border-radius:10px; 
+      border:1px solid var(--border); /* Faded orange border */
+      font-size:16px; outline:none; transition: all 0.2s;
+      background: var(--card);
+    }
+    .search-wrap input:focus{
+      border-color: var(--accent); 
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .search-icon{
+      position:absolute; left:14px; top:50%; transform:translateY(-50%);
+      color:var(--muted); opacity:0.7; pointer-events:none;
+    }
+    .clear-btn{
+      position:absolute; right:12px; top:50%; transform:translateY(-50%);
+      background:none; border:none; cursor:pointer; color:var(--muted); font-size:18px; padding:4px;
+      display:none; 
+    }
+    .meta-counts{font-size:14px; color:var(--muted); white-space:nowrap}
+
+    /* Data Display */
+    .table-container{
+      background:var(--card); border-radius:var(--radius);
+      box-shadow:var(--shadow); overflow:hidden; 
+      border:1px solid var(--border); /* Faded orange border */
+    }
+    
+    /* Desktop Table */
+    table{width:100%; border-collapse:collapse; font-size:14px}
+    thead{background: #fff7ed; border-bottom:1px solid var(--border)}
+    th{text-align:left; padding:14px; font-weight:600; color:#475569; white-space:nowrap}
+    th button{border:none; background:none; cursor:pointer; font-weight:bold; color:var(--muted)}
+    td{padding:12px 14px; border-bottom:1px solid #fff1f2; color:#334155}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#fff7ed} /* Orange hover tint */
+    .highlight{background:#ffedd5; color:#c2410c; font-weight:600; padding:0 2px; border-radius:2px}
+
+    /* Mobile Cards */
+    .mobile-cards{display:none; gap:16px}
+    .m-card{
+      background:var(--card); padding:16px; border-radius:10px;
+      border:1px solid var(--border); /* Faded orange border */
+      box-shadow:0 1px 3px rgba(0,0,0,0.05);
+    }
+    .m-row{margin-bottom:8px; display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9; padding-bottom:8px}
+    .m-row:last-child{border:0; margin:0; padding:0}
+    .m-label{font-weight:600; font-size:13px; color:var(--muted)}
+    .m-val{font-size:14px; text-align:right; max-width:60%}
+
+    @media (max-width: 850px){
+      table{display:none}
+      .mobile-cards{display:grid; grid-template-columns:1fr;}
+      .hero{flex-direction:column; text-align:center; padding-bottom: 30px;}
+      .controls{flex-direction:column; align-items:stretch}
+      .agency-branding {
+        border-left: none;
+        border-top: 1px solid rgba(255,255,255,0.3);
+        padding-left: 0;
+        padding-top: 10px;
+        margin-top: 10px;
         width: 100%;
-        padding: 30px 20px;
-        background: linear-gradient(90deg, var(--orange-dark), #ff7b00);
-        border-bottom-left-radius: 30px;
-        border-bottom-right-radius: 30px;
-        box-shadow: 0 8px 25px rgba(255, 102, 0, 0.3);
-        color: white;
+        text-align: center;
+      }
     }
 
-    .header-content {
-        max-width: 1150px;
-        margin: auto;
-        display: flex;
-        align-items: center;
-        gap: 22px;
+    /* Pagination */
+    .pager{
+      padding:16px; display:flex; gap:6px; justify-content:center; align-items:center;
+      background: #fff7ed; 
+      border-top:1px solid var(--border);
     }
-
-    .header img {
-        width: 110px;
-        height: 110px;
-        border-radius: 16px;
-        border: 3px solid #fff;
-        object-fit: cover;
-        background: #fff;
+    .page-btn{
+      border:1px solid var(--border); background:white;
+      padding:8px 14px; border-radius:6px; cursor:pointer; color:#475569;
+      transition:all 0.2s;
     }
+    .page-btn:hover:not(:disabled){background:#fed7aa; color:#0f172a}
+    .page-btn.active{background:var(--accent); color:white; border-color:var(--accent)}
+    .page-btn:disabled{opacity:0.5; cursor:not-allowed}
 
-    .header h1 {
-        margin: 0;
-        font-size: 28px;
-        font-weight: 800;
-        letter-spacing: 0.6px;
-    }
-
-    .tag {
-        background: #ffffff;
-        padding: 5px 12px;
-        border-radius: 999px;
-        color: #d35400;
-        margin-left: 10px;
-        font-size: 13px;
-        font-weight: bold;
-        border: 1px solid #ffe3c6;
-    }
-
-    .header p {
-        margin: 8px 0 0;
-        color: #fff8ed;
-        font-size: 14px;
-    }
-
-    /* SEARCH BOX */
-    .search-area {
-        max-width: 1150px;
-        margin: 18px auto 0;
-        padding: 12px 16px;
-        background: #fff;
-        border-radius: 14px;
-        box-shadow: var(--shadow);
-        display: flex;
-        gap: 14px;
-        align-items: center;
-    }
-
-    .search-area input {
-        flex: 1;
-        font-size: 15px;
-        padding: 10px 14px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        outline: none;
-    }
-
-    .search-area button {
-        border: none;
-        background: #ff9151;
-        color: #fff;
-        padding: 10px 18px;
-        border-radius: 8px;
-        cursor: pointer;
-    }
-
-    /* TABLE CARD */
-    .card {
-        max-width: 1150px;
-        margin: 25px auto;
-        background: #fff;
-        padding: 15px;
-        border-radius: var(--radius);
-        border: 2px solid var(--border-color);
-        box-shadow: var(--shadow);
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-    }
-
-    th {
-        text-align: left;
-        padding: 12px;
-        background: #fff4e9;
-        border-bottom: 2px solid #ffd7ba;
-        font-weight: 700;
-        color: #8b3200;
-    }
-
-    td {
-        padding: 11px 12px;
-        border-bottom: 1px solid #ffe7d6;
-    }
-
-    tr:hover {
-        background: #fff9f3;
-    }
-
-    .highlight {
-        background: #ffddb8;
-        padding: 2px 4px;
-        border-radius: 4px;
-    }
-
-    /* PAGINATION */
-    .pager {
-        margin-top: 12px;
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .pager button {
-        padding: 8px 12px;
-        border-radius: 8px;
-        border: 0;
-        cursor: pointer;
-        background: #ffd1ac;
-        color: #8b3200;
-        font-weight: bold;
-    }
-
-    .pager button.active {
-        background: #ff8c38;
-        color: white;
-    }
-
-</style>
+    #statusMsg{text-align:center; padding:40px; color:var(--muted); font-style:italic}
+    footer{text-align:center; margin-top:30px; font-size:13px; color:#94a3b8}
+  </style>
 </head>
-
 <body>
 
-<!-- ORANGE TOP HEADER -->
-<div class="header">
-    <div class="header-content">
-        <img src="https://raw.githubusercontent.com/PRAGATIBAWANKAR1/Pragati-Tai-Bawankar/main/WhatsApp%20Image%202025-11-27%20at%205.00.54%20AM.jpeg">
-
-        <div>
-            <h1>
-                PRAGATI TAI BAWANKAR 
-                <span class="tag">SHIV SENA</span>
-            </h1>
-            <p>Advanced smart voter search system — fast, modern, and accurate.</p>
-        </div>
+<div class="container">
+  <div class="hero">
+    <div class="photo">
+      <img src="https://raw.githubusercontent.com/PRAGATIBAWANKAR1/Pragati-Tai-Bawankar/main/WhatsApp%20Image%202025-11-27%20at%205.00.54%20AM.jpeg" alt="Pragati Tai Bawankar">
     </div>
-</div>
+    <div class="heading">
+      <h1>Pragati Tai Bawankar <span class="tag">Shiv Sena</span></h1>
+      <p>Official Voter Search Portal. Find voter details by Name, EPIC No, or Address instantly.</p>
+    </div>
+    <div class="agency-branding">
+      The SM Production
+    </div>
+  </div>
 
-<!-- SEARCH BAR -->
-<div class="search-area">
-    <input id="q" placeholder="Search Name / EPIC / Address / Ward...">
-    <button id="clearBtn">Clear</button>
-</div>
+  <div class="controls">
+    <div class="search-wrap">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input id="q" type="text" placeholder="Type to search (Name, EPIC, Ward...)" autocomplete="off">
+      <button id="clearBtn" class="clear-btn" title="Clear">✕</button>
+    </div>
+    <div class="meta-counts">
+      Showing <strong id="showCount">0</strong> of <strong id="totalCount">0</strong> records
+    </div>
+  </div>
 
-<!-- RESULTS AREA -->
-<div class="card">
-    <div id="loading">Loading CSV…</div>
-    <table>
-        <thead id="thead"></thead>
-        <tbody id="tbody"></tbody>
+  <div class="table-container">
+    <div id="statusMsg">Loading voter database...</div>
+    
+    <table id="dataTable">
+      <thead id="thead"></thead>
+      <tbody id="tbody"></tbody>
     </table>
-    <div class="pager" id="pager"></div>
+
+    <div id="cards" class="mobile-cards"></div>
+
+    <div id="pager" class="pager" style="display:none"></div>
+  </div>
+
+  <footer>
+    Data sourced directly from GitHub Repository. <br>Last updated: Real-time.
+  </footer>
 </div>
 
 <script>
+/* --- CONFIGURATION --- */
+const CSV_URL = "https://raw.githubusercontent.com/PRAGATIBAWANKAR1/Pragati-Tai-Bawankar/main/VOTERLISTALL8.csv";
+const PAGE_SIZE = 25; 
+const COLUMNS_TO_SHOW = 7; 
 
-const CSV_URL =
-"https://raw.githubusercontent.com/PRAGATIBAWANKAR1/Pragati-Tai-Bawankar/main/VOTERLISTALL8.csv";
-
-let data = [];
-let filtered = [];
+/* --- STATE MANAGEMENT --- */
+let rawData = [];
+let filteredData = [];
 let headers = [];
-let page = 1;
-const PAGE_SIZE = 30;
+let currentPage = 1;
+let sortCol = '';
+let sortAsc = true;
 
-function escapeHTML(s){ return (s||"").replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
-function highlight(text){
-    const q = document.getElementById("q").value.trim();
-    if(!q) return text;
-    const re = new RegExp(q,"gi");
-    return text.replace(re, m => `<span class="highlight">${m}</span>`);
+/* --- INITIALIZATION --- */
+function init(){
+  Papa.parse(CSV_URL, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    worker: true, 
+    complete: function(results) {
+      if(results.data && results.data.length > 0){
+        rawData = results.data.filter(row => Object.values(row).some(val => val));
+        headers = results.meta.fields || Object.keys(rawData[0]);
+        filteredData = [...rawData];
+        setupTableHeaders();
+        updateUI(true);
+      } else {
+        document.getElementById('statusMsg').textContent = "No data found in the CSV file.";
+      }
+    },
+    error: function(err){
+      document.getElementById('statusMsg').innerHTML = `Error loading data.<br><small>${err.message}</small>`;
+    }
+  });
 }
 
-Papa.parse(CSV_URL,{
-    download:true,
-    header:true,
-    complete:function(res){
-        data=res.data;
-        headers=res.meta.fields;
-        filtered=data;
-        render();
-        document.getElementById('loading').style.display="none";
-    }
-});
+/* --- CORE FUNCTIONS --- */
+function updateUI(resetPage = false){
+  if(resetPage) currentPage = 1;
+  const total = filteredData.length;
+  document.getElementById('totalCount').textContent = rawData.length.toLocaleString();
+  document.getElementById('showCount').textContent = total.toLocaleString();
 
-document.getElementById("q").addEventListener("input", ()=>{
-    const q=document.getElementById("q").value.toLowerCase();
-    filtered=data.filter(row=>{
-        return headers.some(h=>String(row[h]).toLowerCase().includes(q));
-    });
-    page=1;
-    render();
-});
+  if(total === 0){
+    document.getElementById('statusMsg').textContent = "No records found matching your search.";
+    document.getElementById('statusMsg').style.display = 'block';
+    document.getElementById('dataTable').style.display = 'none';
+    document.getElementById('cards').style.display = 'none';
+    document.getElementById('pager').style.display = 'none';
+    return;
+  }
 
-document.getElementById("clearBtn").onclick=function(){
-    document.getElementById("q").value="";
-    filtered=data;
-    render();
-};
+  document.getElementById('statusMsg').style.display = 'none';
+  document.getElementById('dataTable').style.display = 'table';
+  document.getElementById('cards').style.display = (window.innerWidth <= 850) ? 'grid' : 'none';
+  document.getElementById('pager').style.display = 'flex';
 
-function render(){
-    // Head
-    const thead=document.getElementById("thead");
-    thead.innerHTML="<tr>"+headers.slice(0,8).map(h=>`<th>${h}</th>`).join("")+"</tr>";
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const end = start + PAGE_SIZE;
+  const pageData = filteredData.slice(start, end);
 
-    // Body
-    const tbody=document.getElementById("tbody");
-    tbody.innerHTML="";
-    const start=(page-1)*PAGE_SIZE;
-    const rows=filtered.slice(start,start+PAGE_SIZE);
-    rows.forEach(r=>{
-        const tr=document.createElement("tr");
-        headers.slice(0,8).forEach(h=>{
-            const td=document.createElement("td");
-            td.innerHTML=highlight(escapeHTML(r[h]||""));
-            tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-    });
-
-    // Pagination
-    const pager=document.getElementById("pager");
-    pager.innerHTML="";
-    const pages=Math.ceil(filtered.length/PAGE_SIZE);
-
-    for(let p=1; p<=pages; p++){
-        const btn=document.createElement("button");
-        btn.textContent=p;
-        if(p===page) btn.classList.add("active");
-        btn.onclick=()=>{ page=p; render(); };
-        pager.appendChild(btn);
-    }
+  renderTable(pageData);
+  renderCards(pageData);
+  renderPager(total);
 }
 
+function renderTable(rows){
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+  const displayCols = headers.slice(0, COLUMNS_TO_SHOW);
+
+  rows.forEach(row => {
+    const tr = document.createElement('tr');
+    displayCols.forEach(col => {
+      const td = document.createElement('td');
+      td.innerHTML = highlightText(row[col] || '');
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+}
+
+function renderCards(rows){
+  const container = document.getElementById('cards');
+  container.innerHTML = '';
+  const displayCols = headers.slice(0, COLUMNS_TO_SHOW);
+
+  rows.forEach(row => {
+    const card = document.createElement('div');
+    card.className = 'm-card';
+    let html = '';
+    displayCols.forEach(col => {
+      html += `
+        <div class="m-row">
+          <span class="m-label">${escapeHtml(col)}</span>
+          <span class="m-val">${highlightText(row[col] || '')}</span>
+        </div>`;
+    });
+    card.innerHTML = html;
+    container.appendChild(card);
+  });
+}
+
+function setupTableHeaders(){
+  const thead = document.getElementById('thead');
+  const tr = document.createElement('tr');
+  headers.slice(0, COLUMNS_TO_SHOW).forEach(col => {
+    const th = document.createElement('th');
+    th.innerHTML = `${escapeHtml(col)} <button onclick="sortData('${escapeHtml(col)}')">⇅</button>`;
+    tr.appendChild(th);
+  });
+  thead.appendChild(tr);
+}
+
+/* --- SEARCH & SORT --- */
+function highlightText(text){
+  const term = document.getElementById('q').value.trim();
+  if(!term || !text) return escapeHtml(text);
+  const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+  return escapeHtml(text).replace(regex, '<span class="highlight">$1</span>');
+}
+
+function filterData(){
+  const term = document.getElementById('q').value.toLowerCase().trim();
+  document.getElementById('clearBtn').style.display = term ? 'block' : 'none';
+
+  if(!term){
+    filteredData = [...rawData];
+  } else {
+    filteredData = rawData.filter(row => {
+      return Object.values(row).some(val => String(val).toLowerCase().includes(term));
+    });
+  }
+  updateUI(true);
+}
+
+function sortData(col){
+  if(sortCol === col) sortAsc = !sortAsc;
+  else { sortCol = col; sortAsc = true; }
+  filteredData.sort((a, b) => {
+    const valA = (a[col] || '').toLowerCase();
+    const valB = (b[col] || '').toLowerCase();
+    if(valA < valB) return sortAsc ? -1 : 1;
+    if(valA > valB) return sortAsc ? 1 : -1;
+    return 0;
+  });
+  updateUI(true);
+}
+
+/* --- UTILS --- */
+function renderPager(totalItems){
+  const totalPages = Math.ceil(totalItems / PAGE_SIZE);
+  const pager = document.getElementById('pager');
+  pager.innerHTML = '';
+  if(totalPages <= 1) return;
+  
+  const createBtn = (text, page, active=false, disabled=false) => {
+    const btn = document.createElement('button');
+    btn.className = `page-btn ${active ? 'active' : ''}`;
+    btn.textContent = text;
+    btn.disabled = disabled;
+    btn.onclick = () => { currentPage = page; updateUI(); window.scrollTo(0,0); };
+    return btn;
+  };
+
+  pager.appendChild(createBtn('Prev', currentPage - 1, false, currentPage === 1));
+  let start = Math.max(1, currentPage - 2);
+  let end = Math.min(totalPages, start + 4);
+  for(let i=start; i<=end; i++){
+    pager.appendChild(createBtn(i, i, i === currentPage));
+  }
+  pager.appendChild(createBtn('Next', currentPage + 1, false, currentPage === totalPages));
+}
+
+function escapeHtml(text) {
+  if (text == null) return '';
+  return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+/* --- EVENTS --- */
+let timeout = null;
+document.getElementById('q').addEventListener('input', () => {
+  clearTimeout(timeout);
+  timeout = setTimeout(filterData, 300);
+});
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('q').value = '';
+  filterData();
+});
+window.addEventListener('resize', () => {
+  const isMobile = window.innerWidth <= 850;
+  document.getElementById('dataTable').style.display = isMobile ? 'none' : 'table';
+  document.getElementById('cards').style.display = isMobile ? 'grid' : 'none';
+});
+
+init();
 </script>
-
 </body>
 </html>
