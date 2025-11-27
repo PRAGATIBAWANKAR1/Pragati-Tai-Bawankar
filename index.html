@@ -84,39 +84,44 @@
       background:none; border:none; cursor:pointer; color:var(--muted); font-size:18px; padding:4px; display:none; 
     }
 
-    /* TABLE STYLES */
+    /* --- TABLE STYLES (COMPACT FORMAT) --- */
     .table-container{
       background:var(--card); border-radius:var(--radius);
       box-shadow:var(--shadow); overflow-x:auto; 
       border:1px solid var(--border);
     }
-    table{width:100%; border-collapse:collapse; font-size:14px; min-width: 900px;}
+    table{
+        width:100%; 
+        border-collapse:collapse; 
+        font-size:13px; /* Smaller Font */
+        min-width: 1000px; /* Ensure space for 9 columns */
+    }
     thead{background: #fff7ed; border-bottom:1px solid var(--border)}
-    th{text-align:left; padding:14px; font-weight:600; color:#475569; white-space:nowrap}
-    th button{border:none; background:none; cursor:pointer; font-weight:bold; color:var(--muted)}
     
-    td{padding:12px 14px; border-bottom:1px solid #fff1f2; color:#334155; vertical-align: top;}
+    /* Reduced vertical padding for compact look */
+    th{text-align:left; padding: 10px 12px; font-weight:600; color:#475569; white-space:nowrap}
+    td{padding: 8px 12px; border-bottom:1px solid #fff1f2; color:#334155; vertical-align: top;}
     
     /* Address column wrap */
     td:last-child {
       white-space: normal;
-      min-width: 250px;
-      line-height: 1.5;
+      min-width: 220px;
+      line-height: 1.4;
     }
 
     tr:hover td{background:#fff7ed}
     .highlight{background:#ffedd5; color:#c2410c; font-weight:600; padding:0 2px; border-radius:2px}
 
-    /* MOBILE CARDS */
-    .mobile-cards{display:none; gap:16px}
+    /* MOBILE CARDS - Adjusted for compactness */
+    .mobile-cards{display:none; gap:12px} /* Reduced gap */
     .m-card{
       background:var(--card); border-radius:10px;
       border:1px solid var(--border); box-shadow:0 1px 3px rgba(0,0,0,0.05);
-      padding: 16px; /* Added padding here */
+      padding: 12px; /* Reduced padding */
     }
-    .m-row{margin-bottom:8px; display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9; padding-bottom:8px; flex-wrap: wrap;}
-    .m-label{font-weight:600; font-size:13px; color:var(--muted); width: 100%; margin-bottom: 2px;}
-    .m-val{font-size:14px; color: #334155; width: 100%;}
+    .m-row{margin-bottom:6px; display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9; padding-bottom:6px; flex-wrap: wrap;}
+    .m-label{font-weight:600; font-size:12px; color:var(--muted); width: 100%; margin-bottom: 2px;} /* Smaller Font */
+    .m-val{font-size:13px; color: #334155; width: 100%;} /* Smaller Font */
 
     @media (max-width: 900px){
       table{display:none}
@@ -130,12 +135,15 @@
 
     /* PAGER */
     .pager{
-      padding:16px; display:flex; gap:6px; justify-content:center; align-items:center;
+      padding:12px; /* Reduced padding */
+      display:flex; gap:6px; justify-content:center; align-items:center;
       background: #fff7ed; border-top:1px solid var(--border);
     }
     .page-btn{
       border:1px solid var(--border); background:white;
-      padding:8px 14px; border-radius:6px; cursor:pointer; color:#475569;
+      padding:6px 10px; /* Reduced padding */
+      border-radius:6px; cursor:pointer; color:#475569;
+      font-size: 13px;
     }
     .page-btn.active{background:var(--accent); color:white; border-color:var(--accent)}
 
@@ -183,7 +191,7 @@
 /* CONFIG */
 const CSV_URL = "https://raw.githubusercontent.com/PRAGATIBAWANKAR1/Pragati-Tai-Bawankar/main/VOTERLISTALL8.csv";
 const PAGE_SIZE = 25;
-const COLUMNS_TO_SHOW = 12; // Sufficient limit to show all columns
+const COLUMNS_TO_SHOW = 12; 
 
 /* STATE */
 let rawData=[], filteredData=[], headers=[], currentPage=1, sortCol='', sortAsc=true;
@@ -194,7 +202,7 @@ function init(){
     complete: function(results) {
       if(results.data && results.data.length > 0){
         
-        // --- 🔑 CRITICAL FIX: Clean up headers and data keys for proper mapping ---
+        // CRITICAL FIX: Clean up headers and data keys for proper mapping
         headers = (results.meta.fields || Object.keys(results.data[0] || {})).map(h => h.trim());
         rawData = results.data.map(row => {
             const cleanRow = {};
@@ -204,7 +212,7 @@ function init(){
             });
             return cleanRow;
         }).filter(r => Object.values(r).some(v => v));
-        // --------------------------------------------------------------------------
+        // End of Fix
         
         filteredData = [...rawData];
         setupTableHeaders();
@@ -269,7 +277,6 @@ function renderCards(rows){
     const card = document.createElement('div'); card.className = 'm-card';
     let html = '';
     displayCols.forEach(col => {
-      // For mobile view, address column will wrap naturally
       html += `<div class="m-row"><span class="m-label">${escapeHtml(col)}</span><span class="m-val">${highlightText(row[col] || '')}</span></div>`;
     });
     card.innerHTML = html;
@@ -300,7 +307,6 @@ function filterData(){
   document.getElementById('clearBtn').style.display = term ? 'block' : 'none';
   if(!term) filteredData = [...rawData];
   else filteredData = rawData.filter(r => {
-      // Search across all available headers
       return headers.slice(0, COLUMNS_TO_SHOW).some(h => String(r[h] || '').toLowerCase().includes(term));
   });
   updateUI(true);
@@ -328,7 +334,7 @@ function renderPager(total){
   btn('Prev', currentPage-1, currentPage===1);
   let start = Math.max(1, currentPage-2), end = Math.min(totalPages, start+4);
   for(let i=start; i<=end; i++) btn(i, i, false);
-  btn('Next', currentPage+1, currentPage===totalPages);
+  btn('Next', currentPage+1, currentPage+1, currentPage===totalPages);
 }
 
 function escapeHtml(s){ return String(s||'').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
